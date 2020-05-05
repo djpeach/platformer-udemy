@@ -13,7 +13,7 @@ class Hero extends Phaser.GameObjects.Sprite {
     this.body.setSize(12, 40);
     this.body.setOffset(12, 23);
     this.body.setMaxVelocity(250, 400);
-    this.body.setDragX(750);
+    this.body.setDragX(1500);
 
     this.keys = scene.cursorKeys;
   }
