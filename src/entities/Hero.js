@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import StateMachine from 'javascript-state-machine';
 
 class Hero extends Phaser.GameObjects.Sprite {
   constructor(scene, x, y) {
@@ -16,6 +17,32 @@ class Hero extends Phaser.GameObjects.Sprite {
     this.body.setDragX(1500);
 
     this.keys = scene.cursorKeys;
+
+    this.setupMovement();
+  }
+
+  setupMovement() {
+    this.moveState = new StateMachine({
+      init: 'standing',
+      transitions: [
+        { name: 'jump', from: ['standing'], to: 'jumping' },
+        { name: 'flip', from: ['jumping'], to: 'flipping' },
+        { name: 'fall', from: ['standing'], to: 'falling' },
+        {
+          name: 'touchdown',
+          from: ['jumping', 'flipping', 'falling'],
+          to: 'standing',
+        },
+      ],
+      methods: {
+        onJump: () => {
+          this.body.setVelocityY(-400);
+        },
+        onFlip: () => {
+          this.body.setVelocityY(-300);
+        },
+      },
+    });
   }
 
   preUpdate(time, delta) {
@@ -36,7 +63,7 @@ class Hero extends Phaser.GameObjects.Sprite {
     if (this.body.onFloor()) {
       this.canDoubleJump = false;
     }
-    
+
     if (this.body.velocity.y > 0) {
       this.isJumping = false;
     }
