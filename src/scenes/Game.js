@@ -30,6 +30,10 @@ class Game extends Phaser.Scene {
       this.sys.game.config.width / 2,
       this.sys.game.config.height / 2
     );
+
+    this.platform = this.add.rectangle(220, 240, 200, 10, 0x4bcb7c);
+    this.physics.add.existing(this.platform, true);
+    this.physics.add.collider(this.platform, this.hero);
   }
 
   update(time, delta) {

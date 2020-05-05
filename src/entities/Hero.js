@@ -17,6 +17,7 @@ class Hero extends Phaser.GameObjects.Sprite {
     this.body.setDragX(1500);
 
     this.keys = scene.cursorKeys;
+    this.input = {};
 
     this.setupMovement();
   }
@@ -26,7 +27,7 @@ class Hero extends Phaser.GameObjects.Sprite {
       init: 'standing',
       transitions: [
         { name: 'jump', from: ['standing'], to: 'jumping' },
-        { name: 'flip', from: ['jumping'], to: 'flipping' },
+        { name: 'flip', from: ['jumping', 'falling'], to: 'flipping' },
         { name: 'fall', from: ['standing'], to: 'falling' },
         {
           name: 'touchdown',
@@ -35,6 +36,9 @@ class Hero extends Phaser.GameObjects.Sprite {
         },
       ],
       methods: {
+        onEnterState: (lifecycle) => {
+          console.log(lifecycle);
+        },
         onJump: () => {
           this.body.setVelocityY(-400);
         },
@@ -45,15 +49,26 @@ class Hero extends Phaser.GameObjects.Sprite {
     });
 
     this.movePredicates = {
-      jump: () => {},
-      flip: () => {},
-      fall: () => {},
-      touchdown: () => {},
+      jump: () => {
+        return this.input.didPressJump;
+      },
+      flip: () => {
+        return this.input.didPressJump;
+      },
+      fall: () => {
+        return !this.body.onFloor();
+      },
+      touchdown: () => {
+        return this.body.onFloor();
+      },
     };
   }
 
   preUpdate(time, delta) {
     super.preUpdate(time, delta);
+
+    this.input.didPressJump = Phaser.Input.Keyboard.JustDown(this.keys.up);
+
     if (this.keys.left.isDown) {
       // acceleration is per second, so 1000 units/s = 250 in .25 seconds, 500 in .5 seconds, 1500 in 1.5 seconds, etc
       this.body.setAccelerationX(-1000);
@@ -67,30 +82,10 @@ class Hero extends Phaser.GameObjects.Sprite {
       this.body.setAccelerationX(0);
     }
 
-    if (this.body.onFloor()) {
-      this.canDoubleJump = false;
-    }
-
-    if (this.body.velocity.y > 0) {
-      this.isJumping = false;
-    }
-
-    const didPressJump = Phaser.Input.Keyboard.JustDown(this.keys.up);
-
-    if (didPressJump) {
-      if (this.body.onFloor()) {
-        this.isJumping = true;
-        this.canDoubleJump = true;
-        this.body.setVelocityY(-400);
-      } else if (this.canDoubleJump) {
-        this.isJumping = true;
-        this.body.setVelocityY(-300);
-        this.canDoubleJump = false;
+    if (this.moveState.is('jumping') || this.moveState.is('flipping')) {
+      if (!this.keys.up.isDown && this.body.velocity.y < -150) {
+        this.body.setVelocityY(-150);
       }
-    }
-
-    if (!this.keys.up.isDown && this.body.velocity.y < -150 && this.isJumping) {
-      this.body.setVelocityY(-150);
     }
 
     for (const t of this.moveState.transitions()) {
