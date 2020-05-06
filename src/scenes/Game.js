@@ -49,6 +49,12 @@ class Game extends Phaser.Scene {
       repeat: -1,
     });
     this.anims.create({
+      key: 'hero-running',
+      frames: this.anims.generateFrameNumbers('hero-run-sheet'),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
       key: 'hero-pivoting',
       frames: this.anims.generateFrameNumbers('hero-pivot-sheet'),
     });
@@ -82,8 +88,7 @@ class Game extends Phaser.Scene {
     this.physics.add.collider(this.platform, this.hero);
   }
 
-  update(time, delta) {
-  }
+  update(time, delta) {}
 }
 
 export default Game;
