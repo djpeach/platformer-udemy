@@ -9,7 +9,7 @@ class Game extends Phaser.Scene {
   init(data) {}
 
   preload() {
-    this.load.spritesheet('hero-run-sheet', 'assets/hero/run.png', {
+    this.load.spritesheet('hero-idle-sheet', 'assets/hero/idle.png', {
       frameWidth: 32,
       frameHeight: 64,
     });
@@ -83,9 +83,6 @@ class Game extends Phaser.Scene {
   }
 
   update(time, delta) {
-    if (this.cursorKeys.space.isDown) {
-      console.log('space is down');
-    }
   }
 }
 

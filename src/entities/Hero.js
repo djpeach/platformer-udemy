@@ -3,12 +3,10 @@ import StateMachine from 'javascript-state-machine';
 
 class Hero extends Phaser.GameObjects.Sprite {
   constructor(scene, x, y) {
-    super(scene, x, y, 'hero-run-sheet', 0);
+    super(scene, x, y, 'hero-idle-sheet');
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
-
-    this.anims.play('hero-running');
 
     this.body.setCollideWorldBounds(true);
     this.body.setSize(12, 40);
@@ -20,6 +18,7 @@ class Hero extends Phaser.GameObjects.Sprite {
     this.input = {};
 
     this.setupMovement();
+    this.setupAnimations();
   }
 
   setupMovement() {
@@ -36,9 +35,6 @@ class Hero extends Phaser.GameObjects.Sprite {
         },
       ],
       methods: {
-        onEnterState: (lifecycle) => {
-          console.log(lifecycle);
-        },
         onJump: () => {
           this.body.setVelocityY(-400);
         },
@@ -62,6 +58,29 @@ class Hero extends Phaser.GameObjects.Sprite {
         return this.body.onFloor();
       },
     };
+  }
+
+  setupAnimations() {
+    this.animState = new StateMachine({
+      init: 'idle',
+      transitions: [
+        { name: 'idle', from: ['falling', 'running', 'pivoting'], to: 'idle' },
+        { name: 'run', from: ['falling', 'idle', 'pivoting'], to: 'running' },
+        { name: 'pivot', from: ['falling', 'running'], to: 'pivoting' },
+        { name: 'jump', from: ['idle', 'running', 'pivoting'], to: 'jumping' },
+        { name: 'flip', from: ['jumping', 'falling'], to: 'flipping' },
+        {
+          name: 'fall',
+          from: ['idle', 'running', 'pivoting', 'jumping', 'flipping'],
+          to: 'falling',
+        },
+      ],
+      methods: {
+        onEnterState: (lifecycle) => {
+          this.anims.play(`hero-${lifecycle.to}`);
+        },
+      },
+    });
   }
 
   preUpdate(time, delta) {
