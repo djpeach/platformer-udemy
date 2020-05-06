@@ -78,9 +78,39 @@ class Hero extends Phaser.GameObjects.Sprite {
       methods: {
         onEnterState: (lifecycle) => {
           this.anims.play(`hero-${lifecycle.to}`);
+          console.log(this.moveState.state);
         },
       },
     });
+
+    this.animPredicates = {
+      idle: () => {
+        return this.body.onFloor() && this.body.velocity.x === 0;
+      },
+      run: () => {
+        return (
+          this.body.onFloor() &&
+          // check velocity exists, and matches the flip value
+          Math.sign(this.body.velocity.x) === (this.flipX ? -1 : 1)
+        );
+      },
+      pivot: () => {
+        return (
+          this.body.onFloor() &&
+          // check velocity exists, and matches the flip value
+          Math.sign(this.body.velocity.x) === (this.flipX ? 1 : -1)
+        );
+      },
+      jump: () => {
+        return this.body.velocity.y < 0;
+      },
+      flip: () => {
+        return this.body.velocity.y < 0 && this.moveState.is('flipping');
+      },
+      fall: () => {
+        return this.body.velocity.y > 0;
+      },
+    };
   }
 
   preUpdate(time, delta) {
@@ -110,6 +140,13 @@ class Hero extends Phaser.GameObjects.Sprite {
     for (const t of this.moveState.transitions()) {
       if (t in this.movePredicates && this.movePredicates[t]()) {
         this.moveState[t]();
+        break;
+      }
+    }
+
+    for (const t of this.animState.transitions()) {
+      if (t in this.animPredicates && this.animPredicates[t]()) {
+        this.animState[t]();
         break;
       }
     }
