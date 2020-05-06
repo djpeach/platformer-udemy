@@ -135,8 +135,11 @@ class Hero extends Phaser.GameObjects.Sprite {
   }
 
   kill() {
-    this.moveState.die();
-    this.animState.die();
+    if (this.moveState.can('die')) {
+      this.moveState.die();
+      this.animState.die();
+      this.emit('died');
+    }
   }
 
   isDead() {
@@ -146,7 +149,8 @@ class Hero extends Phaser.GameObjects.Sprite {
   preUpdate(time, delta) {
     super.preUpdate(time, delta);
 
-    this.input.didPressJump = !this.isDead() && Phaser.Input.Keyboard.JustDown(this.keys.up);
+    this.input.didPressJump =
+      !this.isDead() && Phaser.Input.Keyboard.JustDown(this.keys.up);
 
     if (!this.isDead() && this.keys.left.isDown) {
       // acceleration is per second, so 1000 units/s = 250 in .25 seconds, 500 in .5 seconds, 1500 in 1.5 seconds, etc
