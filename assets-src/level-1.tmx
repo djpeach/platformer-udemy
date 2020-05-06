@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="right-down" width="32" height="14" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="3">
+<map version="1.2" tiledversion="1.3.4" orientation="orthogonal" renderorder="right-down" width="32" height="14" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="15">
  <editorsettings>
   <export target="../assets/tilemaps/level-1.json" format="json"/>
  </editorsettings>
@@ -25,7 +25,18 @@
   </data>
  </layer>
  <objectgroup id="4" name="Objects">
-  <object id="2" name="Start" x="80" y="385">
+  <object id="3" gid="7" x="256" y="416" width="32" height="32"/>
+  <object id="4" gid="7" x="288" y="416" width="32" height="32"/>
+  <object id="5" gid="7" x="320" y="416" width="32" height="32"/>
+  <object id="6" gid="7" x="416" y="256" width="32" height="32"/>
+  <object id="7" gid="7" x="576" y="448" width="32" height="32"/>
+  <object id="8" gid="7" x="608" y="448" width="32" height="32"/>
+  <object id="9" gid="7" x="640" y="448" width="32" height="32"/>
+  <object id="10" gid="7" x="672" y="448" width="32" height="32"/>
+  <object id="11" gid="7" x="864" y="448" width="32" height="32"/>
+  <object id="12" gid="7" x="896" y="448" width="32" height="32"/>
+  <object id="13" gid="7" x="928" y="448" width="32" height="32"/>
+  <object id="14" name="Start" x="80" y="385">
    <point/>
   </object>
  </objectgroup>

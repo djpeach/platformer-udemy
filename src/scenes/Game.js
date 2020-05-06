@@ -136,9 +136,19 @@ class Game extends Phaser.Scene {
     );
     this.physics.world.setBoundsCollision(true, true, false, true);
 
+    this.spikeGroup = this.physics.add.group({
+      immovable: true,
+      allowGravity: false,
+    });
+
     this.mapObjects = {};
     this.map.getObjectLayer('Objects').objects.forEach((val, i, arr) => {
-      this.mapObjects[val.name] = val;
+      if (val.name === 'Start') {
+        this.mapObjects.Start = val;
+      }
+      if (val.gid === 7) {
+        this.spikeGroup.create(val.x, val.y, 'world-1-sheet');
+      }
     });
 
     // const debugGraphics = this.add.graphics();
