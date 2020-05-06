@@ -87,6 +87,14 @@ class Game extends Phaser.Scene {
       this.sys.game.config.width / 2,
       this.sys.game.config.height / 2
     );
+
+    this.cameras.main.setBounds(
+      0,
+      0,
+      this.map.widthInPixels,
+      this.map.heightInPixels
+    );
+    this.cameras.main.startFollow(this.hero);
   }
 
   addMap() {
@@ -94,6 +102,13 @@ class Game extends Phaser.Scene {
     const groundTiles = this.map.addTilesetImage('world-1', 'world-1-sheet');
 
     this.map.createStaticLayer('Ground', groundTiles);
+    this.physics.world.setBounds(
+      0,
+      0,
+      this.map.widthInPixels,
+      this.map.heightInPixels
+    );
+    this.physics.world.setBoundsCollision(true, true, false, true);
   }
 
   update(time, delta) {}
