@@ -19,9 +19,9 @@ export default {
       gravity: {
         y: 750,
       },
-      debug: true,
+      // debug: true,
       // debugShowVelocity: true,
-      debugShowBody: true,
+      // debugShowBody: true,
       // debugShowStaticdBody: true,
     },
   },

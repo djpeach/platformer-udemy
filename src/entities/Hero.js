@@ -34,6 +34,11 @@ class Hero extends Phaser.GameObjects.Sprite {
           from: ['jumping', 'flipping', 'falling'],
           to: 'standing',
         },
+        {
+          name: 'die',
+          from: ['jumping', 'flipping', 'falling', 'standing'],
+          to: 'dead',
+        },
       ],
       methods: {
         onJump: () => {
@@ -41,6 +46,10 @@ class Hero extends Phaser.GameObjects.Sprite {
         },
         onFlip: () => {
           this.body.setVelocityY(-300);
+        },
+        onDie: () => {
+          this.body.setVelocity(0, -500);
+          this.body.setAcceleration(0);
         },
       },
     });
@@ -70,6 +79,18 @@ class Hero extends Phaser.GameObjects.Sprite {
         { name: 'pivot', from: ['falling', 'running'], to: 'pivoting' },
         { name: 'jump', from: ['idle', 'running', 'pivoting'], to: 'jumping' },
         { name: 'flip', from: ['jumping', 'falling'], to: 'flipping' },
+        {
+          name: 'die',
+          from: [
+            'idle',
+            'running',
+            'pivoting',
+            'jumping',
+            'flipping',
+            'falling',
+          ],
+          to: 'dead',
+        },
         {
           name: 'fall',
           from: ['idle', 'running', 'pivoting', 'jumping', 'flipping'],
@@ -113,17 +134,26 @@ class Hero extends Phaser.GameObjects.Sprite {
     };
   }
 
+  kill() {
+    this.moveState.die();
+    this.animState.die();
+  }
+
+  isDead() {
+    return this.moveState.is('dead');
+  }
+
   preUpdate(time, delta) {
     super.preUpdate(time, delta);
 
-    this.input.didPressJump = Phaser.Input.Keyboard.JustDown(this.keys.up);
+    this.input.didPressJump = !this.isDead() && Phaser.Input.Keyboard.JustDown(this.keys.up);
 
-    if (this.keys.left.isDown) {
+    if (!this.isDead() && this.keys.left.isDown) {
       // acceleration is per second, so 1000 units/s = 250 in .25 seconds, 500 in .5 seconds, 1500 in 1.5 seconds, etc
       this.body.setAccelerationX(-1000);
       this.setFlipX(true);
       this.body.offset.x = 8;
-    } else if (this.keys.right.isDown) {
+    } else if (!this.isDead() && this.keys.right.isDown) {
       this.body.setAccelerationX(1000);
       this.setFlipX(false);
       this.body.offset.x = 12;

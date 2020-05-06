@@ -42,6 +42,10 @@ class Game extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 64,
     });
+    this.load.spritesheet('hero-die-sheet', 'assets/hero/bonk.png', {
+      frameWidth: 32,
+      frameHeight: 64,
+    });
   }
 
   create(data) {
@@ -85,6 +89,10 @@ class Game extends Phaser.Scene {
       frameRate: 10,
       repeat: -1,
     });
+    this.anims.create({
+      key: 'hero-dead',
+      frames: this.anims.generateFrameNumbers('hero-die-sheet'),
+    });
 
     this.addMap();
 
@@ -115,6 +123,10 @@ class Game extends Phaser.Scene {
       this.hero,
       this.map.getLayer('Ground').tilemapLayer
     );
+
+    setTimeout(() => {
+      this.hero.kill();
+    }, 3000);
   }
 
   addMap() {
