@@ -8,6 +8,7 @@ class Hero extends Phaser.GameObjects.Sprite {
     scene.add.existing(this);
     scene.physics.add.existing(this);
 
+    this.setOrigin(0.5, 1);
     this.body.setCollideWorldBounds(true);
     this.body.setSize(12, 40);
     this.body.setOffset(12, 23);

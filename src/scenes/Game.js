@@ -11,6 +11,7 @@ class Game extends Phaser.Scene {
   preload() {
     this.load.tilemapTiledJSON('level-1', 'assets/tilemaps/level-1.json');
     this.load.image('world-1-sheet', 'assets/tilesets/world-1.png');
+    this.load.image('clouds-sheet', 'assets/tilesets/clouds.png');
 
     this.load.spritesheet('hero-idle-sheet', 'assets/hero/idle.png', {
       frameWidth: 32,
@@ -96,8 +97,13 @@ class Game extends Phaser.Scene {
   addHero() {
     this.hero = new Hero(
       this,
-      this.sys.game.config.width / 2,
-      this.sys.game.config.height / 2
+      this.mapObjects.Start.x,
+      this.mapObjects.Start.y
+    );
+
+    this.children.moveTo(
+      this.hero,
+      this.children.getIndex(this.map.getLayer('Foreground').tilemapLayer)
     );
 
     this.physics.add.collider(
@@ -109,9 +115,18 @@ class Game extends Phaser.Scene {
   addMap() {
     this.map = this.make.tilemap({ key: 'level-1' });
     const groundTiles = this.map.addTilesetImage('world-1', 'world-1-sheet');
+    const backgroundTiles = this.map.addTilesetImage('clouds', 'clouds-sheet');
+
+    const backgroundLayer = this.map.createStaticLayer(
+      'Background',
+      backgroundTiles
+    );
+    backgroundLayer.setScrollFactor(0.6);
 
     const groundLayer = this.map.createStaticLayer('Ground', groundTiles);
     groundLayer.setCollision([1, 2, 4], true);
+
+    this.map.createStaticLayer('Foreground', groundTiles);
 
     this.physics.world.setBounds(
       0,
@@ -120,6 +135,11 @@ class Game extends Phaser.Scene {
       this.map.heightInPixels
     );
     this.physics.world.setBoundsCollision(true, true, false, true);
+
+    this.mapObjects = {};
+    this.map.getObjectLayer('Objects').objects.forEach((val, i, arr) => {
+      this.mapObjects[val.name] = val;
+    });
 
     // const debugGraphics = this.add.graphics();
     // groundLayer.renderDebug(debugGraphics);
