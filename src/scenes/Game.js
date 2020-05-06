@@ -13,6 +13,10 @@ class Game extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 64,
     });
+    this.load.spritesheet('hero-run-sheet', 'assets/hero/run.png', {
+      frameWidth: 32,
+      frameHeight: 64,
+    });
     this.load.spritesheet('hero-pivot-sheet', 'assets/hero/pivot.png', {
       frameWidth: 32,
       frameHeight: 64,
@@ -37,6 +41,12 @@ class Game extends Phaser.Scene {
     this.anims.create({
       key: 'hero-idle',
       frames: this.anims.generateFrameNumbers('hero-idle-sheet'),
+    });
+    this.anims.create({
+      key: 'hero-running',
+      frames: this.anims.generateFrameNumbers('hero-run-sheet'),
+      frameRate: 10,
+      repeat: -1,
     });
     this.anims.create({
       key: 'hero-pivoting',
