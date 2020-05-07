@@ -126,7 +126,7 @@ class Game extends Phaser.Scene {
       this.hero,
       this.spikeGroup,
       () => {
-        this.hero.kill();
+        // this.hero.kill();
       }
     );
 
